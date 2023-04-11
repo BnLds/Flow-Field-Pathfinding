@@ -1361,6 +1361,7 @@ MonoBehaviour:
   unwalkableMask:
     serializedVersion: 2
     m_Bits: 128
+  targetWorldPosition: {fileID: 670303419}
 --- !u!4 &515993396
 Transform:
   m_ObjectHideFlags: 0

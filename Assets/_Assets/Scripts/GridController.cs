@@ -6,6 +6,7 @@ public class GridController : MonoBehaviour
     [SerializeField] private Vector2 gridWorldSize;
     [SerializeField] private float nodeRadius = .5f;
     [SerializeField] private LayerMask unwalkableMask;
+    [SerializeField] private Transform targetWorldPosition;
 
     private FlowField currentFlowField;
 
@@ -13,6 +14,15 @@ public class GridController : MonoBehaviour
     {
         InitializeFlowField();
         currentFlowField.CreateCostField();
+        Node targetGridPosition = currentFlowField.GetNodeFromWorldPoint(targetWorldPosition.position);
+        currentFlowField.CreateIntegrationField(targetGridPosition);
+
+        currentFlowField.CreateFlowField();
+    }
+
+    private void Udpate()
+    {
+          
     }
 
     private void InitializeFlowField()
@@ -32,8 +42,12 @@ public class GridController : MonoBehaviour
                 foreach(Node node in currentFlowField.grid)
                 {
                     //Gizmos.color = node.walkable ? Color.green : Color.red;
-                    Gizmos.DrawWireCube(node.worldPosition, Vector3.one * (nodeRadius*2 - .1f));
-                    Handles.Label(node.worldPosition, node.cost.ToString());
+                    float t = (float) node.bestCost / 75;
+                    Gizmos.color = Color.Lerp(Color.yellow, Color.magenta, t);
+                    Gizmos.DrawCube(node.worldPosition, Vector3.one * (nodeRadius*2 - .1f));
+
+                    //Gizmos.DrawWireCube(node.worldPosition, Vector3.one * (nodeRadius*2 - .1f));
+                    //Handles.Label(node.worldPosition, node.bestCost.ToString());
                 }
             }
         }
