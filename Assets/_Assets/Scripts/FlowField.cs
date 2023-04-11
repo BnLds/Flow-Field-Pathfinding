@@ -9,6 +9,8 @@ public class FlowField
 
     private float nodeDiameter;
     private int gridSizeX, gridSizeY;
+    private Vector3 worldBottomLeftCorner;
+    private Vector3 worldGridPosition;
 
     public FlowField(float _nodeRadius, Vector2 _gridWorldSize, LayerMask _unwalkableMask)
     {
@@ -23,7 +25,8 @@ public class FlowField
     public void CreateGrid(Vector3 position)
     {
         grid = new Node[gridSizeX, gridSizeY];
-        Vector3 worldBottomLeftCorner = position - Vector3.right * gridWorldSize.x / 2 - Vector3.forward * gridWorldSize.y / 2;
+        worldGridPosition = position;
+        worldBottomLeftCorner = position - Vector3.right * gridWorldSize.x / 2 - Vector3.forward * gridWorldSize.y / 2;
         for (int x = 0; x < gridSizeX; x++)
         {
             for (int y = 0; y < gridSizeY; y++)
@@ -33,6 +36,22 @@ public class FlowField
                 grid[x, y] = new Node(walkable, worldPoint, new Vector2Int(x,y));
             }
         }
+    }
+
+    public void CreateCostField()
+    {
+        for (int x = 0; x < gridSizeX; x++)
+        {
+            for (int y = 0; y < gridSizeY; y++)
+            {
+                Vector3 worldPoint = worldBottomLeftCorner + Vector3.right * (x * nodeDiameter + nodeRadius) + Vector3.forward * (y * nodeDiameter + nodeRadius);
+                if(Physics.CheckSphere(worldPoint, nodeRadius, unwalkableMask))
+                {
+                    grid[x, y].cost = byte.MaxValue;
+                }
+            }
+        }
+
     }
 
     public Node GetNodeFromWorldPoint(Vector3 worldPosition)

@@ -1,6 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
 public class GridController : MonoBehaviour
 {
@@ -13,6 +12,7 @@ public class GridController : MonoBehaviour
     private void Awake()
     {
         InitializeFlowField();
+        currentFlowField.CreateCostField();
     }
 
     private void InitializeFlowField()
@@ -31,8 +31,9 @@ public class GridController : MonoBehaviour
             {
                 foreach(Node node in currentFlowField.grid)
                 {
-                    Gizmos.color = node.walkable ? Color.white : Color.red;
-                    Gizmos.DrawCube(node.worldPosition, Vector3.one * (nodeRadius*2 - .1f));
+                    //Gizmos.color = node.walkable ? Color.green : Color.red;
+                    Gizmos.DrawWireCube(node.worldPosition, Vector3.one * (nodeRadius*2 - .1f));
+                    Handles.Label(node.worldPosition, node.cost.ToString());
                 }
             }
         }
