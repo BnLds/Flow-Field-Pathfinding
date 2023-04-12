@@ -3,10 +3,14 @@ using System.Collections.Generic;
 
 public class FlowField
 {
+    private const int ENCUMBERED_COST = 5;
+
     public Node[,] grid { get; private set; }
     public Vector2 gridWorldSize { get; private set; }
     public float nodeRadius { get; private set; }
     public LayerMask unwalkableMask { get; private set; }
+    public LayerMask encumberedMask { get; private set; }
+
 
     private float nodeDiameter;
     private int gridSizeX, gridSizeY;
@@ -15,11 +19,12 @@ public class FlowField
     private Node destinationNode;
 
 
-    public FlowField(float _nodeRadius, Vector2 _gridWorldSize, LayerMask _unwalkableMask)
+    public FlowField(float _nodeRadius, Vector2 _gridWorldSize, LayerMask _unwalkableMask, LayerMask _encumburedMask)
     {
         nodeRadius = _nodeRadius;
         gridWorldSize = _gridWorldSize;
         unwalkableMask = _unwalkableMask;
+        encumberedMask = _encumburedMask;
         nodeDiameter = _nodeRadius * 2;
         gridSizeX = Mathf.RoundToInt(gridWorldSize.x / nodeDiameter);
         gridSizeY = Mathf.RoundToInt(gridWorldSize.y / nodeDiameter);
@@ -47,10 +52,16 @@ public class FlowField
         {
             for (int y = 0; y < gridSizeY; y++)
             {
+                bool hasIncreasedCost = false;
                 Vector3 worldPoint = worldBottomLeftCorner + Vector3.right * (x * nodeDiameter + nodeRadius) + Vector3.forward * (y * nodeDiameter + nodeRadius);
                 if(Physics.CheckSphere(worldPoint, nodeRadius, unwalkableMask))
                 {
                     grid[x, y].cost = byte.MaxValue;
+                }
+                else if(Physics.CheckSphere(worldPoint, nodeRadius, encumberedMask) && !hasIncreasedCost)
+                {
+                    grid[x, y].IncreaseCost(ENCUMBERED_COST);
+                    hasIncreasedCost = true;
                 }
             }
         }

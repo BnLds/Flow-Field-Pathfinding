@@ -6,6 +6,7 @@ public class GridController : MonoBehaviour
     [SerializeField] private Vector2 gridWorldSize;
     [SerializeField] private float nodeRadius = .5f;
     [SerializeField] private LayerMask unwalkableMask;
+    [SerializeField] private LayerMask encumberedMask;
     [SerializeField] private Transform targetWorldPosition;
 
     public FlowField currentFlowField { get; private set;}
@@ -22,7 +23,7 @@ public class GridController : MonoBehaviour
    
     private void InitializeFlowField()
     {
-        currentFlowField = new FlowField(nodeRadius, gridWorldSize, unwalkableMask);
+        currentFlowField = new FlowField(nodeRadius, gridWorldSize, unwalkableMask, encumberedMask);
         currentFlowField.CreateGrid(transform.position);
     }
 
