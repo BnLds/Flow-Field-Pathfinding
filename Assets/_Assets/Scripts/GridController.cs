@@ -44,12 +44,12 @@ public class GridController : MonoBehaviour
                     Gizmos.DrawCube(node.worldPosition, Vector3.one * (nodeRadius*2 - .1f));
                     
                     //Gizmos.DrawWireCube(node.worldPosition, Vector3.one * (nodeRadius*2 - .1f));
-                    //Handles.Label(node.worldPosition, node.bestCost.ToString());
+                    //Handles.Label(node.worldPosition, node.cost.ToString());
                 }
             }
         }
-        
     }
     */
+    
     
 }
