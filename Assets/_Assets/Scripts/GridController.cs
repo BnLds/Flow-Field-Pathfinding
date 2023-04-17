@@ -3,26 +3,22 @@ using UnityEditor;
 
 public class GridController : MonoBehaviour
 {
-    public static GridController Instance { get; private set; }
-
     [SerializeField] private Vector2 gridWorldSize;
     [SerializeField] private float nodeRadius = .5f;
     [SerializeField] private LayerMask unwalkableMask;
     [SerializeField] private LayerMask encumberedMask;
+    [SerializeField] private Transform targetWorldPosition;
 
-    private FlowField currentFlowField;
+    public FlowField currentFlowField { get; private set;}
 
     private void Awake()
     {
-        if(Instance != null)
-        {
-            Destroy(this);
-        }
-        else 
-        {
-            Instance = this;
-        }
+        InitializeFlowField();
+        currentFlowField.CreateCostField();
+        Node targetGridPosition = currentFlowField.GetNodeFromWorldPoint(targetWorldPosition.position);
+        currentFlowField.CreateIntegrationField(targetGridPosition);
 
+        currentFlowField.CreateFlowField();  
     }
    
     private void InitializeFlowField()
@@ -30,19 +26,6 @@ public class GridController : MonoBehaviour
         currentFlowField = new FlowField(nodeRadius, gridWorldSize, unwalkableMask, encumberedMask);
         currentFlowField.CreateGrid(transform.position);
     }
-
-    public FlowField GenerateFlowField(Transform targetTransform)
-    {
-        InitializeFlowField();
-        currentFlowField.CreateCostField();
-        Node targetGridPosition = currentFlowField.GetNodeFromWorldPoint(targetTransform.position);
-        currentFlowField.CreateIntegrationField(targetGridPosition);
-
-        currentFlowField.CreateFlowField();
-
-        return currentFlowField;
-    }
-
 
     /*
     private void OnDrawGizmos()
